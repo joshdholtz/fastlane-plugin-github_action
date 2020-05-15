@@ -41,7 +41,7 @@ module Fastlane
         clone_test_commands = [
           'eval "$(ssh-agent -s)"',
           "ssh-add - <<< \"${#{match_deploy_key}}\"",
-          "git clone git@github.com:#{params[:match_org]}/#{params[:match_repo]}.git"
+          "git clone git@github.com:#{params[:match_org]}/#{params[:match_repo]}.git",
           "ls #{params[:match_repo]}"
         ].map do |command|
           "#{spaces}#{command}"
