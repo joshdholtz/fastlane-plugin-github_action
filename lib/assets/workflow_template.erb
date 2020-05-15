@@ -1,0 +1,27 @@
+name: Execute fastlane
+
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build_dev:
+    name: Execute fastlane
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Install Ruby Dependencies
+        run: bundle install
+
+      - name: Match Repo Clone Test (please delete this)
+        env:
+<%= clone_test_secrets %>
+        run: |
+<%= clone_test_commands %>
+
+      - name: Build and Distribution
+        env:
+<%= secrets %>
+        run: |
+<%= commands %>
