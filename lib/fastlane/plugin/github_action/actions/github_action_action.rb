@@ -7,7 +7,7 @@ module Fastlane
       def self.run(params)
         UI.message("The github_actions plugin is working!")
 
-        require 'pp'
+        self.check_for_setup_ci_in_fastfile
 
         additional_secrets = self.generate_deploy_key(params)
         secret_names = self.post_secrets(params, additional_secrets)
@@ -20,6 +20,21 @@ module Fastlane
 
       def self.deploy_key_title
         "Match Deploy Key (created by fastalne-plugin-github_actions)"
+      end
+      
+      def self.check_for_setup_ci_in_fastfile
+        fastfiles = Dir.glob("./*/Fastfile").map do |path|
+          File.absolute_path(path)
+        end
+       
+        fastfiles.each do |path|
+          content = File.read(path)
+
+          if !content.include?("setup_ci")
+            UI.confirm("`setup_ci` is not detected for '#{path}'. Do you still want to continue on?")
+          end
+        end
+
       end
 
       def self.generate_workflow_template(params, secret_names)
@@ -93,6 +108,7 @@ module Fastlane
           if deploy_key["title"] == deploy_key_title
             if UI.confirm("Deploy Key for the match repo already exists... Delete it?")
               self.match_repo_delete(params, "/keys/#{deploy_key["id"]}")
+              UI.message("Deleted existing Deploy Key")
               sleep(1)
             else
               return {}
@@ -109,8 +125,9 @@ module Fastlane
           read_only: true
         }
         post_deploy_key_resp = self.match_repo_post(params, "/keys", body)
+        UI.message("Created Deploy Key")
         
-        sleep(5)
+        sleep(3)
        
         secrets = {}
         secrets[match_deploy_key] = k.private_key  
@@ -148,6 +165,7 @@ module Fastlane
             encrypted_value: v
           }
           self.repo_put(params, "/actions/secrets/#{k}", body)
+          UI.message("Saving secret #{k}")
         end
 
         return secrets.keys
