@@ -18,9 +18,7 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ['lib']
 
-  # Don't add a dependency to fastlane or fastlane_re
-  # since this would cause a circular dependency
-
+  spec.add_dependency('fastlane', '>= 2.148.1')
   spec.add_dependency 'dotenv'
   spec.add_dependency 'rbnacl'
   spec.add_dependency 'sshkey'
@@ -33,5 +31,4 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency('rubocop', '0.49.1')
   spec.add_development_dependency('rubocop-require_tools')
   spec.add_development_dependency('simplecov')
-  spec.add_development_dependency('fastlane', '>= 2.148.0')
 end
