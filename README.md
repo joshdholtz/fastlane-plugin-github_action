@@ -59,6 +59,15 @@ See https://github.com/RubyCrypto/rbnacl/wiki/Installing-libsodium for more inst
 bundle exec fastlane run github_action \
   api_token:"your-github-personal-access-token-with-all-repo-permissions" \
   org:"your-org" \
+  repo:"your-repo"
+```
+
+or
+
+```sh
+bundle exec fastlane run github_action \
+  api_token:"your-github-personal-access-token-with-all-repo-permissions" \
+  org:"your-org" \
   repo:"your-repo" \
   match_org:"your-match-repo-org" \
   match_repo:"your-match-repo" \
@@ -73,9 +82,9 @@ lane :init_ci do
     api_token: "your-github-personal-access-token-with-all-repo-permissions",
     org: "your-org",
     repo: "your-repo",
-    match_org: "your-match-repo-org",
-    match_repo: "your-match-repo",
-    dotenv_paths: ["fastlane/.env.secret", "fastlane/.env.secret2"]
+    match_org: "your-match-repo-org", # optional
+    match_repo: "your-match-repo", # optional
+    dotenv_paths: ["fastlane/.env.secret", "fastlane/.env.secret2"] # optional
   )
 end
 ```
