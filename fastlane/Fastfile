@@ -1,6 +1,6 @@
 lane :test do
   github_action(
-    api_token: "727f877e732818db329436baef4257a136559c6c",
+    api_token: "23j54kjhf88f8h38h238829382b9382b392",
     org: "joshdholtz",
     repo: "fastlane-plugin-github_actions",
     match_org: "joshdholtz",
