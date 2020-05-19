@@ -107,6 +107,8 @@ module Fastlane
           "#{spaces}#{command}"
         end.join("\n")
 
+        puts "secret size: #{secrets.size}"
+
         workflow_template = Helper::GithubActionHelper.load("workflow_template")
         workflow_render = Helper::GithubActionHelper.render(workflow_template, {
           use_match: use_match,
