@@ -66,13 +66,7 @@ Once installed, information and help for an action can be printed out with this 
 fastlane action github_action # or any action included with this plugin
 ```
 
-### Parameters
-
-The action parameters `api_token`, `owner_name`, `app_name`, and others can also be omitted when their values are [set as environment variables](https://docs.fastlane.tools/advanced/#environment-variables). By default, `appcenter_upload` will use the same `api_token`, `owner_name`, and `app_name` you used in `appcenter_fetch_devices`.
-
-Here is the list of all existing parameters:
-
-#### `appcenter_fetch_devices`
+### Options
 
 | Key | Environment Variable | Description |
 |-----------------|--------------------|
