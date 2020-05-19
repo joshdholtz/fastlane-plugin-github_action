@@ -3,6 +3,32 @@
 [![fastlane Plugin Badge](https://rawcdn.githack.com/fastlane/fastlane/master/fastlane/assets/plugin-badge.svg)](https://rubygems.org/gems/fastlane-plugin-github_action)
 [![Gem Version](https://badge.fury.io/rb/fastlane-plugin-github_action.svg)](https://badge.fury.io/rb/fastlane-plugin-github_action)
 
+## About github_action
+
+[GitHub Actions](https://github.com/features/actions) makes it easy to build, test, and deploy your code right from GitHub. However, etting up [_fastlane_](https://github.com/fastlane/fastlane) to work with [match](https://docs.fastlane.tools/actions/match/#match) on GitHub Actions can take bit of juggling and manual work :pensive:
+
+But `fastlane-plugin-github_action` to the rescue :muscle:
+
+This plugin will:
+
+### 1. Prompt you if `setup_ci` is not found in your `Fastfile`
+Running _fastlane_ on a CI requires the environment to be setup properly. Calling the [setup_ci](http://docs.fastlane.tools/actions/setup_ci/#setup_ci) action does that by configuring a new keychain that will be used for code signing with _match_
+
+### 2. Create a Deploy Key on your _match_ repository to be used from your GitHub Action
+A [Deploy Key](https://developer.github.com/v3/guides/managing-deploy-keys/) is needed for GitHub Actions to access your _match_ repository. This action creates a new SSH key and uses the public key for the Deploy Key on your _match_ repository.
+
+This will only get executed if the `match_org` and `match_repo` options are specified.
+
+### 3. Set the Deploy Key private key in secrets (along with secrets in your [dotenv](https://github.com/bkeepers/dotenv) file(s)
+The private key created for the Deploy Key is store encrypted in your [repository secrets](https://help.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets). The private key is stored under the name `MATCH_DEPLOY_KEY`. 
+
+Encrypted secrets will also get set for environment variables from [dotenv](https://github.com/bkeepers/dotenv) files specified by the `dotenv_paths` option.
+
+### 4. Generate a Workflow YAML file to use
+A Workflow YAML file is created at `.github/workflows/fastlane.yml`. This will enable your repository to start running GitHub Actions right away - once committed and pushed :wink:. The Workflow YAML template will add the Deploy Key private key into the GitHub Action by loading it from the `MATCH_DEPLOY_KEY` secret and executing `ssh-add`. All of your other encrypted secrets will also be loaded into environment variables for you as well. 
+
+An example can be [seen here](https://github.com/joshdholtz/test-repo-for-fastlane-plugin-github_action/blob/add-github-action/.github/workflows/fastlane.yml).
+
 ## Getting Started
 
 This project is a [_fastlane_](https://github.com/fastlane/fastlane) plugin. To get started with `fastlane-plugin-github_action`, add it to your project by running:
@@ -22,10 +48,6 @@ brew install libsodium
 ```
 
 See https://github.com/RubyCrypto/rbnacl/wiki/Installing-libsodium for more installation instructions.
-
-## About github_action
-
-Helper to setup GitHub Actions for _fastlane_.
 
 ## Usage
 
