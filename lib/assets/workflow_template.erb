@@ -13,13 +13,13 @@ jobs:
       - uses: actions/checkout@master
       - name: Install Ruby Dependencies
         run: bundle install
-
+<% if use_match %>
       - name: Match Repo Clone Test (please delete this)
         env:
 <%= clone_test_secrets %>
         run: |
 <%= clone_test_commands %>
-
+<% end %>
       - name: Build and Distribution
         env:
 <%= secrets %>

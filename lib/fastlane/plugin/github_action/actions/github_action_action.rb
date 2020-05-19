@@ -38,29 +38,45 @@ module Fastlane
       end
 
       def self.generate_workflow_template(params, secret_names)
+        workflows_dir = File.absolute_path(".github/workflows")
+        workflow_path = File.join(workflows_dir, 'fastlane.yml')
+
+        if File.exist?(workflow_path)
+          if UI.confirm("File already exists at #{workflow_path}. Do you want to overwrite?")
+            UI.message("Overwriting #{workflow_path}")
+          else
+            UI.message("Cancelled workflow template generation...")
+            return
+          end
+        end
+
         require 'fastlane/erb_template_helper'
         include ERB::Util
           
         spaces = " " * 10
+
+        use_match = secret_names.include?(match_deploy_key)
           
         #
         # Clone test secrets and commands
         #
-        clone_test_secrets = [
-          'GIT_SSH_COMMAND: "ssh -o StrictHostKeyChecking=no"',
-          "#{match_deploy_key}: ${{ secrets.#{match_deploy_key} }}"
-        ].map do |secret|
-          "#{spaces}#{secret}"
-        end.join("\n")
+        if use_match
+          clone_test_secrets = [
+            'GIT_SSH_COMMAND: "ssh -o StrictHostKeyChecking=no"',
+            "#{match_deploy_key}: ${{ secrets.#{match_deploy_key} }}"
+          ].map do |secret|
+            "#{spaces}#{secret}"
+          end.join("\n")
 
-        clone_test_commands = [
-          'eval "$(ssh-agent -s)"',
-          "ssh-add - <<< \"${#{match_deploy_key}}\"",
-          "git clone git@github.com:#{params[:match_org]}/#{params[:match_repo]}.git",
-          "ls #{params[:match_repo]}"
-        ].map do |command|
-          "#{spaces}#{command}"
-        end.join("\n")
+          clone_test_commands = [
+            'eval "$(ssh-agent -s)"',
+            "ssh-add - <<< \"${#{match_deploy_key}}\"",
+            "git clone git@github.com:#{params[:match_org]}/#{params[:match_repo]}.git",
+            "ls #{params[:match_repo]}"
+          ].map do |command|
+            "#{spaces}#{command}"
+          end.join("\n")
+        end
 
         #
         # Secrets and commands
@@ -68,37 +84,52 @@ module Fastlane
         secrets = secret_names.map do |secret_name|
           "#{secret_name}: ${{ secrets.#{secret_name}  }}"
         end
-        secrets << 'GIT_SSH_COMMAND: "ssh -o StrictHostKeyChecking=no"'
-        secrets << 'MATCH_READONLY: true'
+
+        if use_match
+          secrets << 'GIT_SSH_COMMAND: "ssh -o StrictHostKeyChecking=no"'
+          secrets << 'MATCH_READONLY: true'
+        end
 
         secrets = secrets.map do |secret|
           "#{spaces}#{secret}"
         end.join("\n")
 
-        commands = [
-          'eval "$(ssh-agent -s)"',
-          "ssh-add - <<< \"${#{match_deploy_key}}\"",
-          'bundle exec fastlane test'
-        ].map do |command|
+        commands = []
+        if use_match
+          commands = [
+            'eval "$(ssh-agent -s)"',
+            "ssh-add - <<< \"${#{match_deploy_key}}\"",
+          ]
+        end
+
+        commands << 'bundle exec fastlane test'
+        commands = commands.map do |command|
           "#{spaces}#{command}"
         end.join("\n")
 
-
         workflow_template = Helper::GithubActionHelper.load("workflow_template")
         workflow_render = Helper::GithubActionHelper.render(workflow_template, {
+          use_match: use_match,
           clone_test_secrets: clone_test_secrets,
           clone_test_commands: clone_test_commands,
           secrets: secrets,
           commands: commands
         })
 
-        workflows_dir = File.absolute_path(".github/workflows")
-
         FileUtils.mkdir_p(workflows_dir)
-        File.write(File.join(workflows_dir, 'fastlane.yml'), workflow_render)
+        File.write(workflow_path, workflow_render)
       end
 
       def self.generate_deploy_key(params)
+        if params[:match_org].to_s == "" && params[:match_repo].to_s == ""
+          UI.message("Skipping Deploy Key generation...")
+          return {}
+        elsif params[:match_org].to_s == ""
+          UI.user_error!("`match_repo` also needs to be specified")
+        elsif params[:match_repo].to_s == ""
+          UI.user_error!("`match_org` also needs to be specified")
+        end
+
         get_deploy_keys_resp = self.match_repo_get(params, "/keys")
 
         sleep(1)
@@ -175,7 +206,7 @@ module Fastlane
         dotenv_paths = (params[:dotenv_paths] || [])
 
         if dotenv_paths.empty?
-          UI.message "No dotenv paths to parse"
+          UI.message "No dotenv paths to parse..."
           return {}
         end
 
