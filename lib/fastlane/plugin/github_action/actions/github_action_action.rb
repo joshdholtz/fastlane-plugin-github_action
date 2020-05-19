@@ -127,9 +127,9 @@ module Fastlane
           UI.message("Skipping Deploy Key generation...")
           return {}
         elsif params[:match_org].to_s == ""
-          UI.user_error!("`match_repo` also needs to be specified")
-        elsif params[:match_repo].to_s == ""
           UI.user_error!("`match_org` also needs to be specified")
+        elsif params[:match_repo].to_s == ""
+          UI.user_error!("`match_repo` also needs to be specified")
         end
 
         get_deploy_keys_resp = self.match_repo_get(params, "/keys")
