@@ -69,7 +69,7 @@ fastlane action github_action # or any action included with this plugin
 ### Options
 
 | Key | Environment Variable | Description |
-|-----------------|--------------------|
+|---|---|---|
 | `server_url` | `FL_GITHUB_API_SERVER_URL` | The server url. e.g. 'https://your.internal.github.host/api/v3' (Default: 'https://api.github.com') |
 | `api_token` | `FL_GITHUB_API_TOKEN` | Personal API Token for GitHub - generate one at https://github.com/settings/tokens |
 | `org` | `FL_GITHUB_ACTIONS_ORG` | Name of organization of the repository for GitHub Actions |
