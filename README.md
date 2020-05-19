@@ -1,4 +1,4 @@
-# github_action plugin
+# GitHub Action plugin for _fastlane_
 
 [![fastlane Plugin Badge](https://rawcdn.githack.com/fastlane/fastlane/master/fastlane/assets/plugin-badge.svg)](https://rubygems.org/gems/fastlane-plugin-github_action)
 [![Gem Version](https://badge.fury.io/rb/fastlane-plugin-github_action.svg)](https://badge.fury.io/rb/fastlane-plugin-github_action)
