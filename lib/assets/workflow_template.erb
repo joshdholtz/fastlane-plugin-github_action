@@ -20,11 +20,8 @@ jobs:
         run: |
 <%= clone_test_commands %>
 <% end %>
-
 <% if secrets.size == 0 %>
       - name: fastlane
-        env:
-<%= secrets %>
         run: |
 <%= commands %>
 <% else %>
