@@ -20,8 +20,17 @@ jobs:
         run: |
 <%= clone_test_commands %>
 <% end %>
-      - name: Build and Distribution
+
+<% if secrets.size == 0 %>
+      - name: fastlane
         env:
 <%= secrets %>
         run: |
 <%= commands %>
+<% else %>
+      - name: fastlane
+        env:
+<%= secrets %>
+        run: |
+<%= commands %>
+<% end %>
