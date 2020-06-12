@@ -5,7 +5,7 @@
 
 ## About github_action
 
-[GitHub Actions](https://github.com/features/actions) makes it easy to build, test, and deploy your code right from GitHub. However, etting up [_fastlane_](https://github.com/fastlane/fastlane) to work with [match](https://docs.fastlane.tools/actions/match/#match) on GitHub Actions can take bit of juggling and manual work :pensive:
+[GitHub Actions](https://github.com/features/actions) makes it easy to build, test, and deploy your code right from GitHub. However, setting up [_fastlane_](https://github.com/fastlane/fastlane) to work with [match](https://docs.fastlane.tools/actions/match/#match) on GitHub Actions can take bit of juggling and manual work :pensive:
 
 But `fastlane-plugin-github_action` to the rescue :muscle:
 
