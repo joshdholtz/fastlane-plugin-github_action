@@ -155,7 +155,7 @@ module Fastlane
         body = {
           title: deploy_key_title,
           key: k.ssh_public_key,
-          read_only: true
+          read_only: !params[:writable_deploy_key]
         }
         post_deploy_key_resp = self.match_repo_post(params, "/keys", body)
         UI.message("Created Deploy Key")
@@ -324,6 +324,11 @@ module Fastlane
                                        env_name: "FL_GITHUB_ACTIONS_MATCH_REPO",
                                        description: "Name of match repository",
                                        optional: true),
+          FastlaneCore::ConfigItem.new(key: :writable_deploy_key,
+                                       env_name: "FL_GITHUB_ACTIONS_WRITABLE_DEPLOY_KEY",
+                                       description: "Determines if writable deploy key is used",
+                                       default_value: false,
+                                       type: Boolean),
           FastlaneCore::ConfigItem.new(key: :dotenv_paths,
                                        env_name: "FL_GITHUB_ACTINOS_DOTENV_PATHS",
                                        description: "Paths of .env files to parse",
